@@ -39,5 +39,26 @@
     "correo": "josecastillo@gmail.com",
     "imagen": "dwascw",
     "clave ": "123jose"
+  },
+  {
+    "nombre": "olayin",
+    "edad": "18",
+    "correo": "olaya@gmail.com",
+    "clave ": "123",
+    "imagen": "/misImagenes/1788798328843.png"
+  },
+  {
+    "nombre": "olayin",
+    "edad": "18",
+    "correo": "olaya@gmail.com",
+    "clave ": "123",
+    "imagen": "/misImagenes/1788798346085.png"
+  },
+  {
+    "nombre": "olayin",
+    "edad": "18",
+    "correo": "olaya@gmail.com",
+    "clave ": "123",
+    "imagen": "/misImagenes/1788798362602.png"
   }
 ]

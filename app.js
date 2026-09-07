@@ -2,9 +2,23 @@ require('dotenv').config();
 const express = require('express');
 const app = express();
 const mipuerto = process.env.MIPUERTO || 3003; //middleware body-parse
-const sistemaArchivo = require("fs")
-const ruta = require("path")
-const rutaMiArchivo = ruta.join (__dirname, "datos.json")
+const sistemaArchivo = require("fs");
+const ruta = require("path");
+const rutaMiArchivo = ruta.join (__dirname, "datos.json");
+
+//importar multer
+const multer = require("multer");
+
+//almacenamiento
+const almacen = multer.diskStorage({
+    destination: (req, file, cb)=>{cb (null, "misImagenes/")},
+    filename: (req,file, cb)=>{
+        const extension = ruta.extname(file.originalname)
+        cb (null, `${Date.now()}${extension}`)}  //callback
+
+});
+
+const subir = multer ({storage: almacen})
 
 
 app.use(express.json())
@@ -24,8 +38,9 @@ app.get("/api/aprendices",(req,res)=>{
 });
 
 
-app.post("/api/aprendices",(req,res)=>{
+app.post("/api/aprendices", subir.single("imagen"),(req,res)=>{
     const datosAprendiz = req.body
+    datosAprendiz.imagen= req.file? `/misImagenes/${req.file.filename}` : "sin Imagen" 
     sistemaArchivo.readFile(rutaMiArchivo , "utf-8", (error , datos )=>{
         if (error) res.status(500).json({error : "no se puede leer el archivo"});
         const listaAprendices = JSON.parse(datos)
