@@ -1,0 +1,43 @@
+[
+  {
+    "nombre": "Jose Luis",
+    "edad": 17,
+    "correo": "josearmandocm1234@gmail.com",
+    "imagen": "url",
+    "clave": "123"
+  },
+  [
+    {
+      "nombre": "Jose Luis",
+      "edad": 17,
+      "correo": "josearmandocm1234@gmail.com",
+      "imagen": "url",
+      "clave": "1234"
+    }
+  ],
+  [
+    {
+      "nombre": "Jose castillo",
+      "edad": 18,
+      "correo": "jose@gmail.com",
+      "imagen": "url",
+      "clave": "1234616"
+    }
+  ],
+  [
+    {
+      "nombre": "olaya",
+      "edad": 18,
+      "correo": "jose@gmail.com",
+      "imagen": "url",
+      "clave": "12346"
+    }
+  ],
+  {
+    "nombre ": "Jose Luis",
+    "edad": "17",
+    "correo": "josecastillo@gmail.com",
+    "imagen": "dwascw",
+    "clave ": "123jose"
+  }
+]
