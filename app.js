@@ -32,7 +32,7 @@ app.get("/",(_,res)=>{
     res.send('API Rest Full con express');
 });
 
-app.get("/api/aprendices/:id",(req,res)=>{
+app.get("/api/aprendices",(req,res)=>{
     
     // res.status(200).json({mesagge: 'lista aprendices'});
     sistemaArchivo.readFile(rutaMiArchivo , "utf-8", (error , datos )=>{
