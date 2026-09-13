@@ -60,5 +60,20 @@
     "correo": "olaya@gmail.com",
     "clave ": "123",
     "imagen": "/misImagenes/1788798362602.png"
+  },
+  {
+    "nombre": "sandy",
+    "edad": "17",
+    "correo": "sandy@gmail.com",
+    "clave": "123",
+    "imagen": "sin Imagen"
+  },
+  {
+    "nombre": "sandyyyyyy",
+    "edad": "17",
+    "correo": "sandy@gmail.com",
+    "clave": "123",
+    "id": 1789331159951,
+    "imagen": "sin Imagen"
   }
 ]
