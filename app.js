@@ -2,6 +2,12 @@ require('dotenv').config();
 const express = require('express');
 const app = express();
 const mipuerto = process.env.MIPUERTO || 3003; //middleware body-parse
+
+//importar mis middleware
+const registroMiddleware = require("./middleware/registroMiddleware")
+
+const manejadorErroresMiddleware = require("./middleware/manejadorErroresMiddleware")
+
 const sistemaArchivo = require("fs");
 const ruta = require("path");
 const rutaMiArchivo = ruta.join (__dirname, "datos.json");
@@ -12,6 +18,7 @@ const {
 
 //importar multer
 const multer = require("multer");
+const { error } = require('console');
 
 //almacenamiento
 const almacen = multer.diskStorage({
@@ -25,14 +32,27 @@ const almacen = multer.diskStorage({
 const subir = multer ({storage: almacen})
 
 
+
 app.use(express.json())
+
 app.use(express.urlencoded({extended: true}))
+
+//usar nuestro middleware
+app.use(registroMiddleware)
+
+
 
 app.get("/",(_,res)=>{
     res.send('API Rest Full con express');
 });
 
-app.get("/api/aprendices",(req,res)=>{
+
+
+app.get("/api/error",(req ,res, next)=>{
+    next(new Error("este es un error provocado"))
+});
+
+app.get("/api/aprendices",(req , res)=>{
     
     // res.status(200).json({mesagge: 'lista aprendices'});
     sistemaArchivo.readFile(rutaMiArchivo , "utf-8", (error , datos )=>{
@@ -72,20 +92,22 @@ app.post("/api/aprendices", subir.single("imagen"),(req,res)=>{
 });
     
 
-app.put("/api/aprendices/:id",(req,res)=>{
+app.put("/api/aprendices/:id", subir.single("imagen"), (req, res) => {
+
     const id = Number(req.params.id);
 
-    sistemaArchivo.readFile(rutaMiArchivo, "utf-8", (error, datos)=>{
+    sistemaArchivo.readFile(rutaMiArchivo, "utf-8", (error, datos) => {
+
         if (error) {
             return res.status(500).json({
-                error: "no se puede leer el archivo"
+                error: "No se puede leer el archivo"
             });
         }
 
         const listaAprendices = JSON.parse(datos);
 
         const indice = listaAprendices.findIndex(
-            aprendiz => aprendiz.id === id
+            aprendiz => Number(aprendiz.id) === id
         );
 
         if (indice === -1) {
@@ -100,13 +122,20 @@ app.put("/api/aprendices/:id",(req,res)=>{
             id: id
         };
 
+        // Si se envió una nueva imagen, actualizarla
+        if (req.file) {
+            listaAprendices[indice].imagen =
+                `/misImagenes/${req.file.filename}`;
+        }
+
         sistemaArchivo.writeFile(
             rutaMiArchivo,
             JSON.stringify(listaAprendices, null, 2),
-            (error)=>{
+            (error) => {
+
                 if (error) {
                     return res.status(500).json({
-                        error: "no se puede escribir en el archivo"
+                        error: "No se puede escribir en el archivo"
                     });
                 }
 
@@ -158,6 +187,8 @@ app.delete("/api/aprendices/:id",(req,res)=>{
         );
     });
 });
+
+app.use(manejadorErroresMiddleware)
 
 app.listen(mipuerto, () => {
     console.log(`Servidor ejecutándose en el puerto ${mipuerto}`);
