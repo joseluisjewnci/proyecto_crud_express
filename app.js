@@ -4,9 +4,12 @@ const app = express();
 const mipuerto = process.env.MIPUERTO || 3003; //middleware body-parse
 
 //importar mis middleware
-const registroMiddleware = require("./middleware/registroMiddleware")
+const registroMiddleware = require("./src/middleware/registroMiddleware")
 
-const manejadorErroresMiddleware = require("./middleware/manejadorErroresMiddleware")
+const manejadorErroresMiddleware = require("./src/middleware/manejadorErroresMiddleware");
+
+const autenticacionMiddleware = require  ("./src/middleware/autenticacionMiddleware");
+const jwtoken = require("jsonwebtoken")
 
 const sistemaArchivo = require("fs");
 const ruta = require("path");
@@ -14,7 +17,7 @@ const rutaMiArchivo = ruta.join (__dirname, "datos.json");
 const {
     validarNombre,
     validarCorreo
-} = require("./validaciones/validaciones");
+} = require("./src/validaciones/validaciones");
 
 //importar multer
 const multer = require("multer");
@@ -42,14 +45,9 @@ app.use(registroMiddleware)
 
 
 
+
 app.get("/",(_,res)=>{
     res.send('API Rest Full con express');
-});
-
-
-
-app.get("/api/error",(req ,res, next)=>{
-    next(new Error("este es un error provocado"))
 });
 
 app.get("/api/aprendices",(req , res)=>{
@@ -187,6 +185,37 @@ app.delete("/api/aprendices/:id",(req,res)=>{
         );
     });
 });
+
+
+//provocar error
+app.get("/api/error",(req ,res, next)=>{
+    next(new Error("este es un error provocado"))
+});
+
+
+
+//ruta,protegida para acceder con token 
+app.get("/api/rutaprotegida", autenticacionMiddleware ,(req ,res)=>{
+    res.json({mensaje: "Ruta protegida, acceso con token"})
+});
+
+//endpoint o ruta de inicio de sesion para generar un token  
+app.post("/api/iniciarSesion", (req, res) => {
+    const {usuario, clave} =  req.body; 
+    const bdUsuario = {"usuario": "Jose", "clave": "tulunsahur"} 
+    //validar datos 
+    if (usuario !== bdUsuario.usuario || clave !== bdUsuario.clave){
+        res.json({mensaje: "Usuario o clave incorrecta"});
+    }
+        
+    //VERIFICACION Y GENERACION DEL TOKEN
+    
+    const token = jwtoken.sign(
+        {"user": req.usuario },
+        process.env.JWT_SECRETO, {expiresIn: "1h"   
+    });
+    res.json ({token});
+    });  
 
 app.use(manejadorErroresMiddleware)
 
